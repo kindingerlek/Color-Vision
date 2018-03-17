@@ -7,10 +7,12 @@ public class ParticlesReceiver : MonoBehaviour {
     [SerializeField] private bool debug;
 
     // Flashlighter
-    [SerializeField] private ParticleSystem   redEmmitter;
-    [SerializeField] private ParticleSystem greenEmmitter;
-    [SerializeField] private ParticleSystem  blueEmmitter;
-    
+    [SerializeField] private FlashLight   redFlashlight;
+    [SerializeField] private FlashLight greenFlashlight;
+    [SerializeField] private FlashLight  blueFlashlight;
+
+    [SerializeField]
+    private AnimationCurve perceptionCurve = AnimationCurve.EaseInOut(0,0,1,1);
     
     [SerializeField, Range(0.1f, 2f)]
     // This is the speed to change the current color to a new color generated
@@ -31,12 +33,12 @@ public class ParticlesReceiver : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // Read the collision of photons to this receiver
-        ParticlePhysicsExtensions.GetCollisionEvents(   redEmmitter, gameObject,   redPhotonCollisions);
-        ParticlePhysicsExtensions.GetCollisionEvents( greenEmmitter, gameObject, greenPhotonCollisions);
-        ParticlePhysicsExtensions.GetCollisionEvents(  blueEmmitter, gameObject,  bluePhotonCollisions);
+        ParticlePhysicsExtensions.GetCollisionEvents(   redFlashlight.emitter, gameObject,   redPhotonCollisions);
+        ParticlePhysicsExtensions.GetCollisionEvents( greenFlashlight.emitter, gameObject, greenPhotonCollisions);
+        ParticlePhysicsExtensions.GetCollisionEvents(  blueFlashlight.emitter, gameObject,  bluePhotonCollisions);
         
         // Smooth change the color to new color
-        color = Color.Lerp(color, GetColor(), colorChangePerception * Time.deltaTime);
+        color = Color.Lerp(color, GenerateColor(), colorChangePerception * Time.deltaTime);
 
         // Enable the debug
         if (debug)
@@ -48,14 +50,19 @@ public class ParticlesReceiver : MonoBehaviour {
     {
         Debug.Log(string.Format(
             "<color=#{6}>[■]</color> R[Cl:{0}; Er:{1}] G[Cl:{2}; Er:{3} ] B[Cl:{4}; Er:{5}]",
-              redPhotonCollisions.Count, redEmmitter.emission.rateOverTime.constant,
-            greenPhotonCollisions.Count, greenEmmitter.emission.rateOverTime.constant,
-             bluePhotonCollisions.Count, blueEmmitter.emission.rateOverTime.constant,
+              redPhotonCollisions.Count,   redFlashlight.emitter.emission.rateOverTime.constant,
+            greenPhotonCollisions.Count, greenFlashlight.emitter.emission.rateOverTime.constant,
+             bluePhotonCollisions.Count,  blueFlashlight.emitter.emission.rateOverTime.constant,
              ColorUtility.ToHtmlStringRGB(color)));
     }
 
+    public Color GetColor()
+    {
+        return color;
+    }
+
     // Generate a new color based in how much photons were absorbed by this receiver
-    private Color GetColor()
+    public Color GenerateColor()
     {
         Color c = new Color();
 
