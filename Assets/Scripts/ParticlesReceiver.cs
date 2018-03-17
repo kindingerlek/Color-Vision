@@ -7,14 +7,11 @@ public class ParticlesReceiver : MonoBehaviour {
     [SerializeField] private bool debug;
 
     // Flashlighter
-    [SerializeField] private FlashLight   redFlashlight;
-    [SerializeField] private FlashLight greenFlashlight;
-    [SerializeField] private FlashLight  blueFlashlight;
-
-    [SerializeField]
-    private AnimationCurve perceptionCurve = AnimationCurve.EaseInOut(0,0,1,1);
-    
-    [SerializeField, Range(0.1f, 2f)]
+    public FlashLight   redFlashlight;
+    public FlashLight greenFlashlight;
+    public FlashLight  blueFlashlight;
+        
+    [SerializeField, Range(0.1f, 5f)]
     // This is the speed to change the current color to a new color generated
     private float colorChangePerception = 1.5f; 
 
@@ -38,12 +35,13 @@ public class ParticlesReceiver : MonoBehaviour {
         ParticlePhysicsExtensions.GetCollisionEvents(  blueFlashlight.emitter, gameObject,  bluePhotonCollisions);
         
         // Smooth change the color to new color
-        color = Color.Lerp(color, GenerateColor(), colorChangePerception * Time.deltaTime);
+        color = Color.Lerp(color, ReadColor(),  colorChangePerception * Time.deltaTime);
 
         // Enable the debug
         if (debug)
             DebugThis();
     }
+    
 
     // Print in Console some useful informations
     void DebugThis()
@@ -62,7 +60,7 @@ public class ParticlesReceiver : MonoBehaviour {
     }
 
     // Generate a new color based in how much photons were absorbed by this receiver
-    public Color GenerateColor()
+    public Color ReadColor()
     {
         Color c = new Color();
 

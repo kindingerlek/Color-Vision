@@ -11,7 +11,16 @@ public class MultipleFlashlightsController : MonoBehaviour {
     ParticlesReceiver receiver;
 
     [SerializeField]
-    Slider timeSpeed;
+    Slider timeSlider;
+    
+    [SerializeField]
+    Slider redSlider;
+
+    [SerializeField]
+    Slider greenSlider;
+
+    [SerializeField]
+    Slider blueSlider;
 
     private void Start()
     {
@@ -21,15 +30,41 @@ public class MultipleFlashlightsController : MonoBehaviour {
         if (!receiver)
             receiver = GameObject.FindObjectOfType<ParticlesReceiver>();
 
-        if (!timeSpeed)
-            timeSpeed = this.transform.Find("TimeControl/Slider").GetComponent<Slider>();
+        if (!timeSlider)
+            timeSlider = this.transform.Find("TimeControl/Slider").GetComponent<Slider>();
 
+        if(!redSlider)
+            timeSlider = this.transform.Find("LightSliders/Red/RedSlider").GetComponent<Slider>();
+
+        if (!greenSlider)
+            timeSlider = this.transform.Find("LightSliders/Green/GreenSlider").GetComponent<Slider>();
+
+        if (!blueSlider)
+            timeSlider = this.transform.Find("LightSliders/Blue/BlueSlider").GetComponent<Slider>();
+
+
+        timeSlider.onValueChanged.AddListener(delegate { UpdateTime(); });
+
+        redSlider.onValueChanged.AddListener(delegate { UpdateLights(); });
+        greenSlider.onValueChanged.AddListener(delegate { UpdateLights(); });
+        blueSlider.onValueChanged.AddListener(delegate { UpdateLights(); });
         
     }
 
     void Update()
     {
         colorBallon.color = receiver.GetColor();
-        Time.timeScale = timeSpeed.value;
+    }
+
+    void UpdateTime()
+    {
+        Time.timeScale = timeSlider.value;
+    }
+
+    void UpdateLights()
+    {
+        receiver.redFlashlight.SetIntensity(redSlider.value);
+        receiver.greenFlashlight.SetIntensity(greenSlider.value);
+        receiver.blueFlashlight.SetIntensity(blueSlider.value);
     }
 }

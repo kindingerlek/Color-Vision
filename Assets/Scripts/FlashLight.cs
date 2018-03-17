@@ -43,15 +43,16 @@ public class FlashLight : MonoBehaviour {
         emission = emitter.emission;
 
         // Add 10% to maxParticles to avoid drop down the flow rate
-        main.maxParticles = Mathf.RoundToInt(maxPhotonsRate * 1.1f);
+        main.maxParticles = Mathf.RoundToInt(maxPhotonsRate * 1.5f);
         emission.rateOverTime = maxPhotonsRate;
 
         // Set the startColor
         main.startColor = color;
 	}
-
-    private void Update()
+    
+    public void SetIntensity(float value)
     {
+        intensity = value;
         emission.rateOverTime = intensityCurve.Evaluate(intensity) * maxPhotonsRate;
     }
 }
