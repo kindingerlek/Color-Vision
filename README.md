@@ -4,8 +4,7 @@ Recreation a Phet Interactive Simulation in Unity!
 **Original Experiment:** [https://phet.colorado.edu/en/simulation/color-vision]()
 
 ## Screenshots
-![screenshot](Screenshots/screen_1920x1080_2018-03-16_23-26-29.png)
-![screenshot](Screenshots/screen_1920x1080_2018-03-16_23-26-49.png)
+![screenshot](Screenshots/screen_960x540_2018-03-17_00-31-02.png)
 
 ## About
 ### Topics
