@@ -153,11 +153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 0
-  redEmmitter: {fileID: 0}
-  greenEmmitter: {fileID: 0}
-  blueEmmitter: {fileID: 0}
-  colorChangePerception: 1.5
-  channelMax: 15
+  redFlashlight: {fileID: 0}
+  greenFlashlight: {fileID: 0}
+  blueFlashlight: {fileID: 0}
+  colorChangePerception: 2.5
+  channelMax: 8
 --- !u!212 &212171234841167404
 SpriteRenderer:
   m_ObjectHideFlags: 1
