@@ -115,6 +115,24 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   maxPhotonsRate: 800
   intensity: 1
+  intensityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0.09898731
+      outSlope: 0.09898731
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 2.781204
+      outSlope: 2.781204
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!198 &198800669207481696
 ParticleSystem:
   m_ObjectHideFlags: 1
