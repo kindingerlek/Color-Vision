@@ -47,7 +47,7 @@ public class FlashLight : MonoBehaviour {
         emission.rateOverTime = maxPhotonsRate;
 
         // Set the startColor
-        main.startColor = color;
+        //main.startColor = color;
 	}
     
     public void SetIntensity(float value)
