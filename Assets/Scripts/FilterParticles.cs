@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FilterParticles : MonoBehaviour {
+public class FilterParticles : MonoBehaviour, IPhotonProcessor {
     
     public Color filterColor;
     public FlashLight flashlight;
@@ -13,43 +13,32 @@ public class FilterParticles : MonoBehaviour {
 
     private ParticleSystem ps;
     private List<ParticleSystem.Particle> particles = new List<ParticleSystem.Particle>();
-    private ParticleSystem.TriggerModule trigger;
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
 
-
-        // Set-Up the particle system to callback when particle Inside in filter
-        var trigger = ps.trigger;
-        trigger.enabled = true;
-        trigger.SetCollider(0,ps.GetComponentInChildren<Collider>());
-        trigger.inside = ParticleSystemOverlapAction.Callback;
-
         ColorHSV c = new ColorHSV(filterColor);
         c.S = 1;
         c.V = 1;
         filterColor = c.ToRGB();
-    }
-    
-    void OnParticleTrigger()
-    {
-        List<ParticleSystem.Particle> enterList = new List<ParticleSystem.Particle>();
-        int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, enterList);
 
-        for (int i = 0; i < numEnter; i++)
+        flashlight.GetComponentInChildren<ParticlesInsideReader>().photonProcessor = this;
+    }
+
+    void IPhotonProcessor.Process(List<ParticleSystem.Particle> list)
+    {
+        for (int i = 0; i < list.Count; i++)
         {
-            ParticleSystem.Particle p = enterList[i];
+            ParticleSystem.Particle p = list[i];
 
             float f = Filter(p.startColor, filterColor, fallOff);
 
             if (f == 0)
                 p.remainingLifetime = 0;
 
-            enterList[i] = p;
+            list[i] = p;
         }
-
-        ps.SetTriggerParticles(ParticleSystemTriggerEventType.Inside, enterList);
     }
     
     public float Filter(Color raw, Color filter, float falloff)
@@ -66,4 +55,5 @@ public class FilterParticles : MonoBehaviour {
 
         return -1f * Mathf.Clamp01(Mathf.Abs(rawHSV.H - filterHSV.H) / falloff) + 1f;
     }
+    
 }
