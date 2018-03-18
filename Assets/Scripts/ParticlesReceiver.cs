@@ -26,7 +26,7 @@ public class ParticlesReceiver : MonoBehaviour {
 
     // Current color
     private Color color;
-    
+        
 	// Update is called once per frame
 	void Update () {
         // Read the collision of photons to this receiver
@@ -71,5 +71,5 @@ public class ParticlesReceiver : MonoBehaviour {
         c.a = 1f;
 
         return c;
-    }    
+    }
 }
