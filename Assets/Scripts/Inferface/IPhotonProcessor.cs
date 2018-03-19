@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPhotonProcessor {
-    void Process(List<ParticleSystem.Particle> particles);
+    void Process(List<ParticleSystem.Particle> particles, ParticleSystem particleSystem);
 }

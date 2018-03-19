@@ -63,8 +63,8 @@ public class MultipleFlashlightsController : MonoBehaviour {
 
     void UpdateLights()
     {
-        receiver.redFlashlight.SetIntensity(redSlider.value);
-        receiver.greenFlashlight.SetIntensity(greenSlider.value);
-        receiver.blueFlashlight.SetIntensity(blueSlider.value);
+        receiver.flashlightsList[0].SetIntensity(redSlider.value);
+        receiver.flashlightsList[1].SetIntensity(greenSlider.value);
+        receiver.flashlightsList[2].SetIntensity(blueSlider.value);
     }
 }

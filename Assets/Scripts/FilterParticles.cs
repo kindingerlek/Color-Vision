@@ -23,15 +23,15 @@ public class FilterParticles : MonoBehaviour, IPhotonProcessor {
         c.V = 1;
         filterColor = c.ToRGB();
 
-        flashlight.GetComponentInChildren<ParticlesInsideReader>().photonProcessor = this;
+        flashlight.GetComponentInChildren<ParticlesTriggerEventReader>().insideProcessor = this;
     }
 
-    void IPhotonProcessor.Process(List<ParticleSystem.Particle> list)
+    public void Process(List<ParticleSystem.Particle> list, ParticleSystem particleSystem)
     {
         for (int i = 0; i < list.Count; i++)
         {
             ParticleSystem.Particle p = list[i];
-
+            
             float f = Filter(p.startColor, filterColor, fallOff);
 
             if (f == 0)
@@ -55,5 +55,4 @@ public class FilterParticles : MonoBehaviour, IPhotonProcessor {
 
         return -1f * Mathf.Clamp01(Mathf.Abs(rawHSV.H - filterHSV.H) / falloff) + 1f;
     }
-    
 }

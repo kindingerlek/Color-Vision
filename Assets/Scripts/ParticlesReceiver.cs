@@ -2,57 +2,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParticlesReceiver : MonoBehaviour {
+public class ParticlesReceiver : MonoBehaviour, IPhotonProcessor {
     // Enable print in cosole some useful information
     [SerializeField] private bool debug;
 
+    [SerializeField]
+    private int maxColorAbsorb = 60;
+
     // Flashlighter
-    public FlashLight   redFlashlight;
-    public FlashLight greenFlashlight;
-    public FlashLight  blueFlashlight;
+    public FlashLight[] flashlightsList;
         
     [SerializeField, Range(0.1f, 5f)]
     // This is the speed to change the current color to a new color generated
     private float colorChangePerception = 1.5f; 
 
-    [SerializeField]
-    // Set the 'Max Photons' per channel to use when generate a new color
-    private int channelMax = 15;
-
-    // Store the photons collision
-    private List<ParticleCollisionEvent>   redPhotonCollisions = new List<ParticleCollisionEvent>();
-    private List<ParticleCollisionEvent> greenPhotonCollisions = new List<ParticleCollisionEvent>();
-    private List<ParticleCollisionEvent>  bluePhotonCollisions = new List<ParticleCollisionEvent>();
-
     // Current color
-    private Color color;
-        
-	// Update is called once per frame
-	void Update () {
-        // Read the collision of photons to this receiver
-        ParticlePhysicsExtensions.GetCollisionEvents(   redFlashlight.emitter, gameObject,   redPhotonCollisions);
-        ParticlePhysicsExtensions.GetCollisionEvents( greenFlashlight.emitter, gameObject, greenPhotonCollisions);
-        ParticlePhysicsExtensions.GetCollisionEvents(  blueFlashlight.emitter, gameObject,  bluePhotonCollisions);
-        
-        // Smooth change the color to new color
-        color = Color.Lerp(color, ReadColor(),  colorChangePerception * Time.deltaTime);
+    public Color color;
 
-        // Enable the debug
-        if (debug)
-            DebugThis();
-    }
-    
+    private Queue<Color> colorBuffer = new Queue<Color>();
 
-    // Print in Console some useful informations
-    void DebugThis()
+    private void Start()
     {
-        Debug.Log(string.Format(
-            "<color=#{6}>[■]</color> R[Cl:{0}; Er:{1}] G[Cl:{2}; Er:{3} ] B[Cl:{4}; Er:{5}]",
-              redPhotonCollisions.Count,   redFlashlight.emitter.emission.rateOverTime.constant,
-            greenPhotonCollisions.Count, greenFlashlight.emitter.emission.rateOverTime.constant,
-             bluePhotonCollisions.Count,  blueFlashlight.emitter.emission.rateOverTime.constant,
-             ColorUtility.ToHtmlStringRGB(color)));
+        foreach (var flashlight in flashlightsList)
+            flashlight.GetComponentInChildren<ParticlesTriggerEventReader>().enterProcessor = this ;
     }
+
+
+    // Update is called once per frame
+    void Update () {        
+        // Smooth change the color to new color
+        color = Color.Lerp(color, ReadColor(),  colorChangePerception * Time.deltaTime);        
+    }
+
+
+    void OnParticleCollision(GameObject other)
+    {
+        List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
+        flashlightsList[0].emitter.GetCollisionEvents(other, collisionEvents);
+        
+        Debug.Log("collisions: " + collisionEvents.Count);
+    }
+
+    void IPhotonProcessor.Process(List<ParticleSystem.Particle> particlesList, ParticleSystem particleSystem)
+    {
+        
+        for(int i = colorBuffer.Count-1 ; i >= 0; i++)
+        {
+            if (colorBuffer.Count >= maxColorAbsorb)
+            {
+                colorBuffer.Dequeue();
+                colorBuffer.Enqueue(particlesList[i].GetCurrentColor(particleSystem));
+            }
+            
+        }
+    }    
 
     public Color GetColor()
     {
@@ -62,14 +65,16 @@ public class ParticlesReceiver : MonoBehaviour {
     // Generate a new color based in how much photons were absorbed by this receiver
     public Color ReadColor()
     {
+        if (colorBuffer == null || colorBuffer.Count == 0)
+            return Color.white;
+        
         Color c = new Color();
 
-        // Clamp the values between the limits [0;channelMax] and them normalize it (value between 0 and 1)
-        c.r = Mathf.Clamp(   redPhotonCollisions.Count, 0, channelMax) / (float) channelMax;
-        c.g = Mathf.Clamp( greenPhotonCollisions.Count, 0, channelMax) / (float) channelMax;
-        c.b = Mathf.Clamp(  bluePhotonCollisions.Count, 0, channelMax) / (float) channelMax;
-        c.a = 1f;
+        foreach(var particleColor in colorBuffer)
+        {
+            c += particleColor;
+        }
 
-        return c;
+        return c / colorBuffer.Count;
     }
 }
