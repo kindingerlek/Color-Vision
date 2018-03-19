@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,7 +50,12 @@ public class FlashLight : MonoBehaviour {
         // Set the startColor
         //main.startColor = color;
 	}
-    
+
+    internal float GetIntensity()
+    {
+        return intensity;
+    }
+
     public void SetIntensity(float value)
     {
         intensity = value;

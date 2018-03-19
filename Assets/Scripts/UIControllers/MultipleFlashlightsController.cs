@@ -5,10 +5,7 @@ using UnityEngine.UI;
 
 public class MultipleFlashlightsController : MonoBehaviour {
     [SerializeField]
-    SpriteRenderer colorBallon;
-
-    [SerializeField]
-    ParticlesReceiver receiver;
+    MultilightReceiver receiver;
 
     [SerializeField]
     Slider timeSlider;
@@ -24,11 +21,9 @@ public class MultipleFlashlightsController : MonoBehaviour {
 
     private void Start()
     {
-        if(!colorBallon)
-            colorBallon = GameObject.Find("Color Balloon").GetComponent<SpriteRenderer>();
 
         if (!receiver)
-            receiver = GameObject.FindObjectOfType<ParticlesReceiver>();
+            receiver = GameObject.FindObjectOfType<MultilightReceiver>();
 
         if (!timeSlider)
             timeSlider = this.transform.Find("TimeControl/Slider").GetComponent<Slider>();
@@ -51,11 +46,6 @@ public class MultipleFlashlightsController : MonoBehaviour {
         
     }
 
-    void Update()
-    {
-        colorBallon.color = receiver.GetColor();
-    }
-
     void UpdateTime()
     {
         Time.timeScale = timeSlider.value;
@@ -63,8 +53,8 @@ public class MultipleFlashlightsController : MonoBehaviour {
 
     void UpdateLights()
     {
-        receiver.flashlightsList[0].SetIntensity(redSlider.value);
-        receiver.flashlightsList[1].SetIntensity(greenSlider.value);
-        receiver.flashlightsList[2].SetIntensity(blueSlider.value);
+        receiver.redFlashlight.SetIntensity(redSlider.value);
+        receiver.greenFlashlight.SetIntensity(greenSlider.value);
+        receiver.blueFlashlight.SetIntensity(blueSlider.value);
     }
 }
