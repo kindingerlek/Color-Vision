@@ -23,7 +23,7 @@ public class FilterParticles : MonoBehaviour, IPhotonProcessor {
         c.V = 1;
         filterColor = c.ToRGB();
 
-        flashlight.GetComponentInChildren<ParticlesTriggerEventReader>().insideProcessor = this;
+        flashlight.GetComponentInChildren<ParticlesTriggerEventReader>().AddPhotonProcessor(this, GetComponentInChildren<Collider>(), ParticleSystemTriggerEventType.Inside);
     }
 
     public void Process(List<ParticleSystem.Particle> list, ParticleSystem particleSystem)

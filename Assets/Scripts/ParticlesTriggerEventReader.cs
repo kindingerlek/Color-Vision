@@ -19,7 +19,7 @@ public class ParticlesTriggerEventReader : MonoBehaviour
     List<ParticleSystem.Particle> insideParticleList = new List<ParticleSystem.Particle>();
 
 
-    private void AddPhotonProcessor(IPhotonProcessor processor, Collider collider, ParticleSystemTriggerEventType eventType)
+    public void AddPhotonProcessor(IPhotonProcessor processor, Collider collider, ParticleSystemTriggerEventType eventType)
     {
         particleSystem = GetComponent<ParticleSystem>();
 
@@ -30,8 +30,25 @@ public class ParticlesTriggerEventReader : MonoBehaviour
         switch(eventType)
         {
             case ParticleSystemTriggerEventType.Enter:
+                if (enterProcessor != null)
+                    return;
+
                 onEnter = true;
-                break:
+                enterProcessor = processor;
+                trigger.SetCollider(0, collider);
+                break;
+
+            case ParticleSystemTriggerEventType.Inside:
+                if (insideProcessor != null)
+                    return;
+
+                onInside = true;
+                insideProcessor = processor;
+                trigger.SetCollider(1, collider);
+                break;
+
+            default:                
+                break;
         }
 
 
