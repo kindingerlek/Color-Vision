@@ -16,11 +16,10 @@ public class MultilightReceiver : MonoBehaviour {
     private float colorChangePerception = 1.5f; 
 
     // Current color
-    public Color color;
+    private Color color;
 
     private void Start()
     {
-
         if (!colorDisplay)
             colorDisplay = this.transform.Find("Color Display").GetComponent<SpriteRenderer>();
     }
