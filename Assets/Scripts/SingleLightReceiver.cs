@@ -41,19 +41,25 @@ public class SingleLightReceiver : MonoBehaviour {
     // Generate a new color based in how much photons were absorbed by this receiver
     public Color ReadColor()
     {
-        Color c1 = new Color();
-        Color c2 = new Color();
+        Color Lcolor = new Color();
+        Color Rcolor = new Color();
 
-        ColorHSV c = new ColorHSV(filter.filterColor);
-        c.S = 1 - filter.fallOff;
-        c.V = Mathf.Clamp01(filter.fallOff / 0.1f);
+        ColorHSV filterHSV = new ColorHSV(filter.filterColor);
+        // Saturation get lower when more of other particles pass through filter
+        filterHSV.S = 1 - filter.fallOff;
 
-        c.H = c.H - filter.fallOff / 2;
-        c1 = c.ToRGB();
+        // Brightness get lower when very few particles pass through filter
+        filterHSV.V = Mathf.Clamp01(filter.fallOff / 0.1f);
 
-        c.H = c.H + filter.fallOff;
-        c2 = c.ToRGB();
+        // Move hue 50% of falloff from original hue to the left
+        filterHSV.H = filterHSV.H - filter.fallOff / 2;
+        Lcolor = filterHSV.ToRGB();
 
-        return (c1+c2)/2f;
+        // Move hue 50% of falloff from original hue to the right
+        filterHSV.H = filterHSV.H + filter.fallOff;
+        Rcolor = filterHSV.ToRGB();
+
+        // Linear interpolation between pivot colors
+        return (Lcolor+Rcolor)/2f;
     }
 }

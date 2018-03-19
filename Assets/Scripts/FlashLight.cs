@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,8 +37,8 @@ public class FlashLight : MonoBehaviour {
         }
     }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start() {
         // Get the ParticleSystem Modules
         main = emitter.main;
         emission = emitter.emission;
@@ -46,9 +46,20 @@ public class FlashLight : MonoBehaviour {
         // Add 10% to maxParticles to avoid drop down the flow rate
         main.maxParticles = Mathf.RoundToInt(maxPhotonsRate * 1.5f);
         emission.rateOverTime = maxPhotonsRate;
+    }
+
+    private void Update()
+    {
+        var startColor = main.startColor;
 
         // Set the startColor
-        //main.startColor = color;
+        startColor.colorMin = SetStartColor(color);
+        startColor.colorMax = SetStartColor(color);
+
+        startColor.mode = ParticleSystemGradientMode.TwoColors;
+
+        main.startColor = startColor;
+
 	}
 
     internal float GetIntensity()
@@ -60,5 +71,19 @@ public class FlashLight : MonoBehaviour {
     {
         intensity = value;
         emission.rateOverTime = intensityCurve.Evaluate(intensity) * maxPhotonsRate;
+    }
+
+    private Color SetStartColor( Color rgb)
+    {
+        ColorHSV hsv = new ColorHSV(rgb);
+
+        hsv.H += Random.Range(0, 1f - hsv.S);
+
+        hsv.V = 1f;
+
+        hsv.S = 1f;
+
+
+        return hsv.ToRGB();
     }
 }
