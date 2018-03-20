@@ -8,6 +8,7 @@ public class ColorHSV
     private float h;
     private float s;
     private float v;
+    private float a;
 
     public float H
     {
@@ -27,11 +28,18 @@ public class ColorHSV
         set { v = Mathf.Clamp01(value); }
     }
 
+    public float A
+    {
+        get { return a; }
+        set { a = Mathf.Clamp01(value); }
+    }
+
     public ColorHSV()
     {
         H = 0;
         S = 0;
         V = 0;
+        A = 1;
     }
 
     public ColorHSV(float h, float s, float v)
@@ -39,7 +47,9 @@ public class ColorHSV
         this.H = h;
         this.S = s;
         this.V = v;
+        this.A = 1;
     }
+    
 
     public ColorHSV(Color rgbColor)
     {
@@ -59,10 +69,14 @@ public class ColorHSV
         H = h;
         S = s;
         V = v;
+        A = a;
     }
 
     public Color ToRGB()
     {
-        return Color.HSVToRGB(H, S, V);
+        Color c = Color.HSVToRGB(H, S, V);
+        //c.a = this.a;
+        
+        return c;
     }
 }
