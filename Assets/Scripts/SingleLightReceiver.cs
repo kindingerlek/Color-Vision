@@ -8,7 +8,7 @@ public class SingleLightReceiver : MonoBehaviour {
     public FilterParticles filter;
 
     // Flashlighter
-    public FlashLight redFlashlight;
+    public FlashLight flashlight;
 
     [SerializeField, Range(0.1f, 5f)]
     // This is the speed to change the current color to a new color generated
@@ -41,15 +41,23 @@ public class SingleLightReceiver : MonoBehaviour {
     // Generate a new color based in how much photons were absorbed by this receiver
     public Color ReadColor()
     {
+        // If filter is not enabled, then return flashlight color
+        if (!filter.gameObject.activeSelf)
+            return flashlight.color;
+
         Color Lcolor = new Color();
         Color Rcolor = new Color();
+        Color Fcolor = Color.white;
+
 
         ColorHSV filterHSV = new ColorHSV(filter.filterColor);
+        ColorHSV flashLHSV = new ColorHSV(flashlight.color);
+        
         // Saturation get lower when more of other particles pass through filter
-        filterHSV.S = 1 - filter.fallOff;
+        filterHSV.S = 1 - filter.fallOff + flashLHSV.S;
 
         // Brightness get lower when very few particles pass through filter
-        filterHSV.V = Mathf.Clamp01(filter.fallOff / 0.1f);
+        filterHSV.V = Mathf.Clamp01(1f - filter.absorptionRate);
 
         // Move hue 50% of falloff from original hue to the left
         filterHSV.H = filterHSV.H - filter.fallOff / 2;
@@ -59,7 +67,9 @@ public class SingleLightReceiver : MonoBehaviour {
         filterHSV.H = filterHSV.H + filter.fallOff;
         Rcolor = filterHSV.ToRGB();
 
+        Fcolor = flashlight.color;
+
         // Linear interpolation between pivot colors
-        return (Lcolor+Rcolor)/2f;
+        return (Lcolor+Rcolor+Fcolor)/3f;
     }
 }
