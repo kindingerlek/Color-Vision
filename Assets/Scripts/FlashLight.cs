@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FlashLight : MonoBehaviour {
-
-    [SerializeField]
-    private Color color = Color.white;
+    
+    public Color color = Color.white;
 
     [SerializeField]
     private int maxPhotonsRate = 800;
@@ -43,8 +42,8 @@ public class FlashLight : MonoBehaviour {
         main = emitter.main;
         emission = emitter.emission;
 
-        // Add 10% to maxParticles to avoid drop down the flow rate
-        main.maxParticles = Mathf.RoundToInt(maxPhotonsRate * 1.5f);
+        // Add 100% to maxParticles to avoid drop down the flow rate
+        main.maxParticles = Mathf.RoundToInt(maxPhotonsRate * 2f);
         emission.rateOverTime = maxPhotonsRate;
     }
 
