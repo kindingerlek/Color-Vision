@@ -60,7 +60,7 @@ public class SingleLightReceiver : MonoBehaviour {
         filterHSV.V = Mathf.Clamp01(1f - filter.absorptionRate);
 
         // Move hue 50% of falloff from original hue to the left
-        filterHSV.H = filterHSV.H - filter.fallOff / 2;
+        filterHSV.H = filterHSV.H - filter.fallOff / 2f;
         Lcolor = filterHSV.ToRGB();
 
         // Move hue 50% of falloff from original hue to the right

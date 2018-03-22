@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class FilterParticles : MonoBehaviour, IPhotonProcessor {
     
-    public Color filterColor;
+    [SerializeField]
+    private Color _filterColor;
     public FlashLight flashlight;
+
+    public SpriteRenderer spriteFront;
+    public SpriteRenderer spriteBack;
 
     [Range(0.001f, 1f)]
     public float fallOff = .1f;
@@ -17,6 +21,21 @@ public class FilterParticles : MonoBehaviour, IPhotonProcessor {
 
     private ParticleSystem ps;
     private List<ParticleSystem.Particle> particles = new List<ParticleSystem.Particle>();
+
+    public Color filterColor
+    {
+        get { return _filterColor; }
+
+        set
+        {
+            Color c = value;
+            _filterColor = c;
+
+            c.a = 1f - fallOff;
+            spriteFront.color = c;
+            spriteBack.color = c;
+        }
+    }
 
     private void Start()
     {
